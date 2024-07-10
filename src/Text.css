@@ -1,0 +1,41 @@
+.text1{
+    text-align: center;
+    font-family: Mulish;
+font-size: 48px;
+font-weight: 700;
+line-height: 60.24px;
+top:70px;
+position: relative;
+}
+.text2{
+    font-family: Mulish;
+font-size: 32px;
+font-weight: 700;
+line-height: 40.16px;
+text-align: center;
+top:60px;
+position:relative;
+}
+.text3
+{
+    position: relative;
+font-family: Mulish;
+font-size: 14px;
+font-weight: 700;
+line-height: 17.57px;
+text-align: center;
+top:45px;
+
+}
+.text4{
+    height: 405px;
+    width: 295px;
+    position: relative;
+    font-family: Mulish;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 15.06px;
+    text-align: left;
+    top: 40px;
+    left: 49px;
+}

@@ -1,0 +1,213 @@
+.cart-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    column-gap: 2.22vw;
+    margin-top: 2vh;
+    margin-bottom: 2vh;
+}
+.cart-icon{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    
+}
+.empty-cart {
+    font-size: 18px;
+    color: grey;
+  }
+.left-section {
+    display: flex;
+    align-items: center; 
+    column-gap: 2.22vw; /* Align items vertically center */
+} 
+
+.cart-image {
+    width: 16px;
+    height: 16px;
+
+    left: 16px;
+    
+    
+     /* Space between image and text */
+}
+
+.cart-text {
+    
+font-family: Mulish;
+font-size: 14px;
+font-weight: 400;
+line-height: 17.57px;
+text-align: left;
+
+    
+}
+.cart-items {
+    margin-top: 20px;
+  }
+  
+  .cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    column-gap: 3.11vw;
+    position: relative;
+
+  }
+  
+  .cart-item-image {
+    width: 50px;
+    height: 50px;
+   
+  }
+  
+  .cart-item-details {
+    top: -2.2vh;
+    position: relative;
+    /* justify-content: end; */
+    display: flex;
+    flex-direction: column;
+}
+ 
+  
+  .cart-item-name {
+    font-family: Mulish;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 12.55px;
+    text-align: center;
+    
+  }
+  
+  .cart-item-price {
+    font-size: 14px;
+    color: black;
+  }
+  .trash-name{
+   top: -0.5vh;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 67vw;
+
+    
+    /* Space between items and bag section */
+  }
+  .inline-icon
+  {
+    width: 12px;
+    height: 12px;
+    position: relative;
+    left: 21vw;
+  }
+  .cart-item-sale-price {
+    font-size: 14px;
+    color: grey;
+    text-decoration: line-through;
+  }
+  .cart-items-container {
+   
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align items to the left */
+    margin-bottom: 20px; /* Space between items and bag section */
+  }
+  .quantity-controls {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    
+    position: relative;
+    left: 4.3vw;
+    border: 1px solid  #4F4E4D;
+    border-radius: 8px;
+    width: 74px;
+height: 30px;
+
+
+    color:  #629E58;
+    top: 1vh;
+    
+  }
+  
+  .quantity-button {
+    
+
+color:  #629E58;
+    background-color: white;
+    
+   
+    border: 0px solid  #4F4E4D;
+    font-size: 16px;
+    
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    font-weight: 700
+  }
+  
+  .quantity-button:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .quantity-button span {
+    margin: 0;
+  }
+  
+  .cart-item-quantity {
+    margin: -8px 8px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .lne-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* Ensure it stays on top of other content */
+    pointer-events: none; /* Allow clicks to pass through to underlying elements */
+    display: flex;
+  justify-content: center;
+  align-items: center;
+  }
+  
+  .lne {
+    width: 100%;
+  }
+  
+  .vertical-line {
+    margin-top: -12px;
+    position: absolute;
+    top: 50%;
+    /* left: 50%; */
+    /* transform: translate(-50%, -50%); */
+    pointer-events: none; /* Allow clicks to pass through to underlying elements */
+  }
+  .checkout-button {
+    width: 160px;
+    height: 40px;
+    position: absolute;
+    right: 10px;
+    
+    z-index: 1001; /* Ensure the button stays on top */
+    padding: 10px 42px 10px 42px;
+    background-color:  #A61E40;
+    
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    pointer-events: auto;}
+    .cart-summary {
+      position: absolute;
+      pointer-events: auto; /* Ensure the text is selectable */
+      left: 11vw;
+font-family: Mulish;
+font-size: 14px;
+font-weight: 700;
+line-height: 17.57px;
+text-align: left;
+
+    }
