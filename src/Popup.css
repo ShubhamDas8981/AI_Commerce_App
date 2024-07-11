@@ -1,48 +1,50 @@
 .popu {
-    height: 47.625vh;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 83.33vw;
-    background-color: #FFF6F6;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    z-index: 1000;
+  height: auto; /* Change this to auto to allow dynamic height based on content */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 83.33vw;
+  background-color: #FFF6F6;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  z-index: 1000;
+  max-height: 90vh; /* Ensure the popup does not exceed the viewport height */
+  overflow-y: auto; /* Enable scrolling if content exceeds the max height */
 }
-  
-  
-  .popup-content {
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .popup-image {
-    top: 1.5vh;
-    position: relative;
-    width: 61.11vw;
-    height: 34.6vh;
-}
-  
-  
-  .popup-name {
-    margin-top: 4vh;
-    font-family: Hind;
-font-size: 14px;
-font-weight: 400;
-line-height: 22.41px;
-text-align: center;
-text-transform: capitalize;
 
-  }
-  
-  .popup-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 18px;
-    cursor: pointer;
-  }
-  
+.popup-content {
+  padding: 20px;
+  text-align: center;
+  position: relative; /* Ensure the close button is positioned correctly */
+}
+
+.popup-image {
+  top: 1.5vh;
+  position: relative;
+  width: 61.11vw;
+  height: auto; /* Allow the image height to adjust automatically */
+  max-height: 34.6vh; /* Maintain maximum height for the image */
+  object-fit: contain; /* Ensure the image fits within the given dimensions */
+}
+
+.popup-name {
+  margin-top: 4vh;
+  font-family: Hind;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22.41px;
+  text-align: center;
+  text-transform: capitalize;
+  word-wrap: break-word; /* Ensure long text wraps within the container */
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef,useCallback } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -97,7 +97,18 @@ function App() {
   const recognition = useRef(null);
   const inputref = useRef(''); // To store the final transcript
   const fileInputRef = useRef(null);
+  const [visibleProducts, setVisibleProducts] = useState([]);
 
+  const handleProductVisible = useCallback((product_id) => {
+    setVisibleProducts((prevVisibleProducts) => {
+      const updatedProducts = Array.from(new Set([...prevVisibleProducts, product_id])).slice(-2); // Ensure only last two unique values
+      return updatedProducts;
+    });
+  }, []);
+  
+  
+  
+console.log(visibleProducts);
   useEffect(() => {
     if (SpeechRecognition) {
       recognition.current = new SpeechRecognition();
@@ -287,7 +298,8 @@ function App() {
      tag_cloud : includeTagCloud? tagCloud : {}, 
       num_items: "10",
       session_id: sess.toString(),
-     search_id:searchi.toString()
+     search_id:searchi.toString(),
+     products_in_viewport:  visibleProducts,
 
     });
 
@@ -308,16 +320,28 @@ function App() {
       .then((data) => {
         console.log(data)
         if (data.api_action_status === "success") {
-          const fetchedProducts = (activelang === 'hindi' ? data.item_hi : data.items).map((item, index) => ({
-        id: index,
-            name: item.provider_name.slice(0, 15), // Truncate to 10 characters
+          const languageMap = {
+            hindi: 'hi',
+            kannada: 'kn',
+            malayalam: 'ml',
+            marathi: 'mr',
+            tamil: 'ta',
+            telugu: 'te',
+            english: 'en'
+          };
+        
+          const langSuffix = languageMap[activelang] || 'en'; // Default to English if no match
+        
+          const fetchedProducts = data.items.map((item, index) => ({
+            id: index,
+            name: (item[`provider_name_${langSuffix}`] || item.provider_name).slice(0,15), // Default to provider_name if specific language is not available
             img: item.image_link1,
-            description: item.product_name.slice(0, 25),
-            description1: item.product_name, // Truncate to 30 characters
+            description: (item[`product_name_${langSuffix}`] || item.product_name).slice(0,25), // Default to product_name if specific language is not available
+            description1: item[`product_name_${langSuffix}`] || item.product_name, // Default to product_name if specific language is not available
             price: parseFloat(item.sale_price),
             url: item.product_url,
-            score:item.score,
-            product_i:item.product_id,
+            score: item.score,
+            product_i: item.product_id,
             originalPrice: parseFloat(item.price),
             isVisible: false // Set isVisible to false for newly fetched products
           }));
@@ -421,6 +445,7 @@ function App() {
        session_id: sess.toString(),
        product_id: product.product_i,
        search_id:searchi.toString(),
+       products_in_viewport:  visibleProducts,
        
     });
 
@@ -441,23 +466,34 @@ function App() {
       .then((data) => {
         console.log(data)
         if (data.api_action_status === "success") {
-          const fetchedProducts = (activelang === 'hindi' ? data.item_hi : data.items).map((item, index) => ({
+          const languageMap = {
+            hindi: 'hi',
+            kannada: 'kn',
+            malayalam: 'ml',
+            marathi: 'mr',
+            tamil: 'ta',
+            telugu: 'te',
+            english: 'en'
+          };
+        
+          const langSuffix = languageMap[activelang] || 'en'; // Default to English if no match
+        
+          const fetchedProducts = data.items.map((item, index) => ({
             id: index,
-            name: item.provider_name.slice(0, 15), // Truncate to 10 characters
+            name: (item[`provider_name_${langSuffix}`] || item.provider_name).slice(0,15), // Default to provider_name if specific language is not available
             img: item.image_link1,
-            description: item.product_name.slice(0, 25),
-            description1: item.product_name, // Truncate to 30 characters
+            description: (item[`product_name_${langSuffix}`] || item.product_name).slice(0,25), // Default to product_name if specific language is not available
+            description1: item[`product_name_${langSuffix}`] || item.product_name, // Default to product_name if specific language is not available
             price: parseFloat(item.sale_price),
             url: item.product_url,
-            score:item.score,
-            product_i:item.product_id,
+            score: item.score,
+            product_i: item.product_id,
             originalPrice: parseFloat(item.price),
             isVisible: false // Set isVisible to false for newly fetched products
           }));
-
           fetchedProducts.forEach((produc) => {
             produc.description = produc.description.toLowerCase().split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-            product.name = product.name.toLowerCase().split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            produc.name = product.name.toLowerCase().split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
           });
 
           setProducts(fetchedProducts);
@@ -526,7 +562,8 @@ function App() {
       tag_cloud : includeTagCloud? tagCloud : {}, 
        num_items: "10",
        session_id: sess.toString(),
-       search_id:searchi.toString()
+       search_id:searchi.toString(),
+       products_in_viewport:  visibleProducts,
     });
 
     const requestOptions = {
@@ -546,16 +583,28 @@ function App() {
       .then((data) => {
         console.log(data)
         if (data.api_action_status === "success") {
-          const fetchedProducts = (activelang === 'hindi' ? data.item_hi : data.items).map((item, index) => ({
+          const languageMap = {
+            hindi: 'hi',
+            kannada: 'kn',
+            malayalam: 'ml',
+            marathi: 'mr',
+            tamil: 'ta',
+            telugu: 'te',
+            english: 'en'
+          };
+        
+          const langSuffix = languageMap[activelang] || 'en'; // Default to English if no match
+        
+          const fetchedProducts = data.items.map((item, index) => ({
             id: index,
-            name: item.provider_name.slice(0, 15), // Truncate to 10 characters
+            name: (item[`provider_name_${langSuffix}`] || item.provider_name).slice(0,15), // Default to provider_name if specific language is not available
             img: item.image_link1,
-            description: item.product_name.slice(0, 25),
-            description1: item.product_name, // Truncate to 30 characters
+            description: (item[`product_name_${langSuffix}`] || item.product_name).slice(0,25), // Default to product_name if specific language is not available
+            description1: item[`product_name_${langSuffix}`] || item.product_name, // Default to product_name if specific language is not available
             price: parseFloat(item.sale_price),
             url: item.product_url,
-            score:item.score,
-            product_i:item.product_id,
+            score: item.score,
+            product_i: item.product_id,
             originalPrice: parseFloat(item.price),
             isVisible: false // Set isVisible to false for newly fetched products
           }));
@@ -733,9 +782,11 @@ console.log(product.price);
               <Slider {...settings}>
                 {products.map((product) => (
                   <Product 
+                   product_id={product.product_i}
                     key={product.id} 
                     {...product} 
                     url={product.url} // Pass the product URL to the Product component
+                    
                     score={product.score}
                     buymode={isBuyMode}
                     onLongPress={() => handleLongPressSearch(product)} 
@@ -743,6 +794,8 @@ console.log(product.price);
                     changetoggle={ handletogglePressSearch}
                     changetoggle2={ handletogglePressSearch2}
                     onInfoClick={() => handleInfoClick(product)}
+                    onProductVisible={handleProductVisible}
+
                     
                   />
                 ))}
@@ -823,7 +876,7 @@ console.log(product.price);
       )}
       {isLoading && (
         <div className="popup">
-          <p>Fetching best data for you...</p>
+          <p>"Our AI is fetching best products for you"...</p>
         </div>
       )}
       {popupData && (

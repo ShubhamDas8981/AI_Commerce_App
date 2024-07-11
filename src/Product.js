@@ -1,31 +1,58 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef,useCallback  } from 'react';
 import { publish } from './pubsub';
 import './Product.css';
-import stack from './images/Group 139.svg';
-import like from './images/Group 132.svg';
-import info from './images/Group 141.svg';
+import stack from './images/Group 139 (1).svg';
+import like from './images/Group 132 (1).svg';
+import info from './images/Group 141 (1).svg';
 
-function Product({ key, img, name, description,description1, price, originalPrice, onLongPress, onDoubleClick, changetoggle, changetoggle2, url, score, buymode,onInfoClick }) {
+function Product({product_id, key, img, name, description,description1, price, originalPrice, onLongPress, onDoubleClick, changetoggle, changetoggle2, url, score, buymode,onInfoClick,onProductVisible }) {
   const [isVisible, setIsVisible] = useState(false);
- 
+
   const longPressTimeout = useRef(null);
   const doubleClickTimeout = useRef(null);
   const lastClickTime = useRef(0);
   const [isSliderDragging, setIsSliderDragging] = useState(false);
   const isLongPress = useRef(false);
   const longPressStartTime = useRef(0);
-
+  const productRef = useRef(null);
   const scoreNumber = parseFloat(score);
 
   const getBackgroundColor = () => {
     if (scoreNumber > 75) {
-      return 'green';
+      return '#629E58';
     } else if (scoreNumber >= 60) {
-      return 'yellow';
+      return '#E19926';
     } else {
-      return 'orange';
+      return '#FF6746';
+
     }
   };
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        console.log(`Product ${product_id} - Intersection observed:`, entry);
+        if (entry.isIntersecting) {
+          onProductVisible(product_id);
+        }
+      },
+      {
+        root: null,
+        threshold: 1, // Adjust as needed
+      }
+    );
+
+    if (productRef.current) {
+      observer.observe(productRef.current);
+    }
+
+    return () => {
+      if (productRef.current) {
+        observer.unobserve(productRef.current);
+      }
+    };
+  }, [product_id, onProductVisible]);
 
   const backgroundColor = getBackgroundColor();
 
@@ -147,7 +174,7 @@ function Product({ key, img, name, description,description1, price, originalPric
         <span className='product-score' style={{ backgroundColor }}>
       {score}%
     </span>
-          <img
+          <img ref={productRef} 
             className={`product-image ${isVisible ? 'visible' : 'hidden'}`}
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
