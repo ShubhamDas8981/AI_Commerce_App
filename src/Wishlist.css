@@ -63,20 +63,47 @@ text-align: left;
   }
   
   .cart-item-details {
-    top: -2.2vh;
+    width: 236px;
+    height: 32px;
+    top: -1.2vh;
     position: relative;
     /* justify-content: end; */
+    font-family: Mulish;
     display: flex;
     flex-direction: column;
+    row-gap: 1vh;
+    text-transform: capitalize;
 }
- 
+.cart-item-price{
+  font-family: Mulish;
+font-size: 12px;
+font-weight: 700;
+line-height: 15.06px;
+text-align: left;
+
+}
+.cart-item-price2{
+  font-family: Mulish;
+font-size: 10px;
+font-weight: 400;
+line-height: 15.55px;
+text-align: left;
+color: grey;
+text-decoration: line-through;
+
+}
+ .price{
+  display: flex;
+  flex-direction: row;
+  column-gap: 2vw;
+ }
   
   .cart-item-name {
     font-family: Mulish;
     font-size: 10px;
     font-weight: 400;
     line-height: 12.55px;
-    text-align: center;
+    text-align: left;
     
   }
   

@@ -5,7 +5,7 @@ import stack from './images/Group 139.svg';
 import like from './images/Group 132.svg';
 import info from './images/Group 141.svg';
 
-function Product({ key, img, name, description, price, originalPrice, onLongPress, onDoubleClick, changetoggle, changetoggle2, url, score, buymode,onInfoClick }) {
+function Product({ key, img, name, description,description1, price, originalPrice, onLongPress, onDoubleClick, changetoggle, changetoggle2, url, score, buymode,onInfoClick }) {
   const [isVisible, setIsVisible] = useState(false);
  
   const longPressTimeout = useRef(null);
@@ -14,6 +14,21 @@ function Product({ key, img, name, description, price, originalPrice, onLongPres
   const [isSliderDragging, setIsSliderDragging] = useState(false);
   const isLongPress = useRef(false);
   const longPressStartTime = useRef(0);
+
+  const scoreNumber = parseFloat(score);
+
+  const getBackgroundColor = () => {
+    if (scoreNumber > 75) {
+      return 'green';
+    } else if (scoreNumber >= 60) {
+      return 'yellow';
+    } else {
+      return 'orange';
+    }
+  };
+
+  const backgroundColor = getBackgroundColor();
+
 
   useEffect(() => {
     setIsVisible(false);
@@ -102,7 +117,7 @@ function Product({ key, img, name, description, price, originalPrice, onLongPres
   };
 
   const handleAddToCart = () => {
-    const productDetails = { key, img, description, price, originalPrice, quantity: 1 };
+    const productDetails = { key, img, description1, price, originalPrice, quantity: 1 };
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     cart.push(productDetails);
     localStorage.setItem('cart', JSON.stringify(cart));
@@ -111,7 +126,7 @@ function Product({ key, img, name, description, price, originalPrice, onLongPres
   };
 
   const handleAddToWishlist = () => {
-    const productDetails = { key, img, description, price, originalPrice, quantity: 1 };
+    const productDetails = { key, img, description1, price, originalPrice, quantity: 1 };
     const Wishcart = JSON.parse(localStorage.getItem('Wish')) || [];
     Wishcart.push(productDetails);
     localStorage.setItem('Wish', JSON.stringify(Wishcart));
@@ -129,7 +144,9 @@ function Product({ key, img, name, description, price, originalPrice, onLongPres
     <div className={`product ${isVisible ? 'fade-in' : 'fade-out'}`}>
       <div className="product-card">
         <div style={{ position: 'relative', display: 'inline-block' }}>
-          <span className='product-score'>{score}%</span>
+        <span className='product-score' style={{ backgroundColor }}>
+      {score}%
+    </span>
           <img
             className={`product-image ${isVisible ? 'visible' : 'hidden'}`}
             onMouseDown={handleMouseDown}

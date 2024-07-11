@@ -1,0 +1,35 @@
+{
+  "files": {
+    "main.css": "/static/css/main.3b191ba1.css",
+    "main.js": "/static/js/main.625b3ab7.js",
+    "static/js/845.4e9c8a8e.chunk.js": "/static/js/845.4e9c8a8e.chunk.js",
+    "static/media/WhatsApp Image 2024-07-03 at 14.07.35_149a3814.jpg": "/static/media/WhatsApp Image 2024-07-03 at 14.07.35_149a3814.4acc9034ef74b9a6e9ac.jpg",
+    "service-worker.js": "/service-worker.js",
+    "static/media/Group 130.svg": "/static/media/Group 130.7195482582889caac548a3ea5cd41d12.svg",
+    "static/media/Group 128.svg": "/static/media/Group 128.a60c242bd25f62b5ffbfc59f3b018eb1.svg",
+    "static/media/slick.svg": "/static/media/slick.2630a3e3eab21c607e21.svg",
+    "static/media/slick.eot": "/static/media/slick.a4e97f5a2a64f0ab1323.eot",
+    "static/media/slick.ttf": "/static/media/slick.c94f7671dcc99dce43e2.ttf",
+    "static/media/chatbubble-ellipses.svg": "/static/media/chatbubble-ellipses.1dae2e169bed7ce58abd8c227dec968a.svg",
+    "static/media/slick.woff": "/static/media/slick.295183786cd8a1389865.woff",
+    "static/media/trash.svg": "/static/media/trash.fa76fcd0254e5045c561acdc526cd4fc.svg",
+    "static/media/image.svg": "/static/media/image.0e156f546dfe6dd933d2d8c447c0092c.svg",
+    "static/media/Group 139.svg": "/static/media/Group 139.73281e8c70ce638a209ea0c6041c43d0.svg",
+    "static/media/mic.svg": "/static/media/mic.e1796f146e4e1ffba72a868d91c7391c.svg",
+    "index.html": "/index.html",
+    "static/media/Group 141.svg": "/static/media/Group 141.627b47cdda14a4bece3d31b774edc197.svg",
+    "static/media/bag.svg": "/static/media/bag.695e1b6753d3efcbb34b902994a8a808.svg",
+    "static/media/Group 132.svg": "/static/media/Group 132.ccdebb32c4b715cb54a182165103d73a.svg",
+    "static/media/chevron-down.svg": "/static/media/chevron-down.b029e6ac3866ad2d62a6bda9460877c0.svg",
+    "static/media/Rectangle 8.svg": "/static/media/Rectangle 8.1a41118c270c7e95862e30470ce4fced.svg",
+    "static/media/Line 6.svg": "/static/media/Line 6.851aea4dec42be23421997433cabaf89.svg",
+    "static/media/Line 4.svg": "/static/media/Line 4.1ed9c0bc287190e2b6b1f1e816f3f565.svg",
+    "main.3b191ba1.css.map": "/static/css/main.3b191ba1.css.map",
+    "main.625b3ab7.js.map": "/static/js/main.625b3ab7.js.map",
+    "845.4e9c8a8e.chunk.js.map": "/static/js/845.4e9c8a8e.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3b191ba1.css",
+    "static/js/main.625b3ab7.js"
+  ]
+}

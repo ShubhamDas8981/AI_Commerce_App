@@ -309,10 +309,11 @@ function App() {
         console.log(data)
         if (data.api_action_status === "success") {
           const fetchedProducts = (activelang === 'hindi' ? data.item_hi : data.items).map((item, index) => ({
-            id: index,
+        id: index,
             name: item.provider_name.slice(0, 15), // Truncate to 10 characters
             img: item.image_link1,
-            description: item.product_name.slice(0, 25), // Truncate to 30 characters
+            description: item.product_name.slice(0, 25),
+            description1: item.product_name, // Truncate to 30 characters
             price: parseFloat(item.sale_price),
             url: item.product_url,
             score:item.score,
@@ -444,7 +445,8 @@ function App() {
             id: index,
             name: item.provider_name.slice(0, 15), // Truncate to 10 characters
             img: item.image_link1,
-            description: item.product_name.slice(0, 25), // Truncate to 30 characters
+            description: item.product_name.slice(0, 25),
+            description1: item.product_name, // Truncate to 30 characters
             price: parseFloat(item.sale_price),
             url: item.product_url,
             score:item.score,
@@ -548,7 +550,8 @@ function App() {
             id: index,
             name: item.provider_name.slice(0, 15), // Truncate to 10 characters
             img: item.image_link1,
-            description: item.product_name.slice(0, 25), // Truncate to 30 characters
+            description: item.product_name.slice(0, 25),
+            description1: item.product_name, // Truncate to 30 characters
             price: parseFloat(item.sale_price),
             url: item.product_url,
             score:item.score,
@@ -826,7 +829,7 @@ console.log(product.price);
       {popupData && (
         <Popup
           image={popupData.img}
-          name={popupData.description}
+          name={popupData.description1}
           onClose={handleClosePopup}
         />
       )}

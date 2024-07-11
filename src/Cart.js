@@ -69,7 +69,7 @@ function Cart({color}) {
               />
               <div className="cart-item-details">
               
-                <span className="cart-item-name"> {item.description.slice(0, 15)} </span>
+                <span className="cart-item-name"> {item.description1.slice(0, 35)} </span>
                 
                   
                   
