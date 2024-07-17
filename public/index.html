@@ -31,20 +31,7 @@
   </head>
   <body>
     
-    <script>
-        let messageSent = false;
-      // Listen for messages from the parent page
-      window.addEventListener('message', function(event) {
-        // Log the origin and message for debugging purposes
-        console.log('Message received from:', event.origin);
-        console.log('Message content:', event.data);
-      
-        if (!messageSent) {
-        // Send a message back to the parent
-        event.source.postMessage('Hello from iframe on www.a.com', event.origin);
-        messageSent = true;
-      }
-    }, false);</script>
+    
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--

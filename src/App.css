@@ -39,6 +39,38 @@
 .hidden {
   display: none; /* Applied when isOpen is true */
 }
+.slick-next:before {
+  font-family: 'slick';
+  font-size: 20px;
+  line-height: 1;
+  opacity: 0;
+
+}
+.slick-next::after {
+  font-family: 'slick';
+  font-size: 20px;
+  line-height: 1;
+  opacity: 0;
+
+}
+.slick-next
+{
+    left: 96%;
+    font-size: 0;
+    line-height: 0;
+    position: absolute;
+    top: 20vh;
+    display: block;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    /* transform: translate(0, -50%); */
+    cursor: pointer;
+    color: black;
+    border: none;
+   
+    /* background: transparent; */
+}
 
 .popup {
   width: 80%;
@@ -64,6 +96,34 @@
   
 }
 .s-i:active {
+  background-color: rgb(51, 51, 51);
+
+}
+.slickimg{
+  transition: background-color 0.3s ease; 
+}
+.slickimg:active {
+  background-color: rgb(51, 51, 51);
+
+}
+.slick-prev
+{
+  left: 96%;
+  font-size: 0;
+  line-height: 0;
+  position: absolute;
+  transition: background-color 0.3s ease; 
+  top: 44vh;
+  display: block;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  /* transform: translate(0, -50%); */
+  cursor: pointer;
+  color: black;
+  border: none;
+}
+.slickimgl:active {
   background-color: rgb(51, 51, 51);
 
 }

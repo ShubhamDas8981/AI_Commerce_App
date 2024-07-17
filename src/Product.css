@@ -212,13 +212,13 @@
 }
 
 .product-image {
+  border-radius: 8px;
+  border: 1px solid #EDECEC;
   width: 136px;
   height: 188px;
   transition: opacity 1s ease-in-out;
-   /* Smooth transition for image opacity */
-
-  /* Additional styles */
 }
+
 
 .product-image.visible {
   opacity: 1; /* Fully visible */

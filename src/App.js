@@ -14,14 +14,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import Font
 import { faSearch } from '@fortawesome/free-solid-svg-icons'; // Import the search icon
 import placeholderImage from './images/prod_default.png';
 import close from './images/close.png';
-
+import { publish } from './pubsub';
+import { subscribe } from './pubsub';
 import searchImage from './images/image.svg';
 import main from './images/WhatsApp Image 2024-07-03 at 14.07.35_149a3814.jpg';
 import mic from './images/mic.svg';
 import mi from './images/chatbubble-ellipses.svg';
 import line from './images/Line 6.svg';
 import thumbsUp from './images/Group 130.svg'; // Import the thumbs up image
-import thumbsDown from './images/Group 128.svg'; // Import the thumbs down image
+import thumbsDown from './images/Group 128.svg';
+import righticon from './images/Group 131.svg';
+import lefticon from './images/Group 132 (2).svg'; // Import the thumbs down image
 
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -80,7 +83,7 @@ function App() {
   const [activeModel, setActiveModel] = useState('openai');
   const [activelang, setActivelang] = useState(localStorage.getItem('activelang') || 'english');
   const [popupData, setPopupData] = useState(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [searchInput, setSearchInput] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [showPopup, setShowPopup] = useState(false); // State for popup visibility
@@ -98,17 +101,60 @@ function App() {
   const inputref = useRef(''); // To store the final transcript
   const fileInputRef = useRef(null);
   const [visibleProducts, setVisibleProducts] = useState([]);
+  const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cart')) || []);
 
+    useEffect(() => {
+      const handleCartUpdate = (updatedCart) => {
+        setCartItems(updatedCart);
+      };
+  
+      subscribe('cartUpdated', handleCartUpdate);
+  
+      return () => {
+        // Unsubscribe logic can be added here if needed
+      };
+    }, []);
+  const [WishlistItems, setWishItems] = useState(JSON.parse(localStorage.getItem('Wish')) || []);
+  const [searchKey, setSearchKey] = useState(0);
+  useEffect(() => {
+    const handleWishUpdate = (updatedCart) => {
+      setWishItems(updatedCart);
+    };
+
+    subscribe('WishcartUpdated', handleWishUpdate);
+
+    return () => {
+      // Unsubscribe logic can be added here if needed
+    };
+  }, []);
   const handleProductVisible = useCallback((product_id) => {
+    if(!isListening)
+    {
+      console.log("entry");
     setVisibleProducts((prevVisibleProducts) => {
       const updatedProducts = Array.from(new Set([...prevVisibleProducts, product_id])).slice(-2); // Ensure only last two unique values
+      console.log("hiiii",updatedProducts);
+      localStorage.setItem('visibleProducts', JSON.stringify(updatedProducts));
       return updatedProducts;
-    });
+    });}
   }, []);
   
   
   
 console.log(visibleProducts);
+useEffect(() => {
+  const handleMessage = (event) => {
+    if (event.data.action === 'open') {
+      setIsOpen(true);
+    }
+  };
+
+  window.addEventListener('message', handleMessage);
+
+  return () => {
+    window.removeEventListener('message', handleMessage);
+  };
+}, []);
   useEffect(() => {
     if (SpeechRecognition) {
       recognition.current = new SpeechRecognition();
@@ -136,6 +182,7 @@ console.log(visibleProducts);
       };
 
       recognition.current.onend = () => {
+        setIsListening(false);
         console.log('Voice recognition ended');
         
         setShowPopup(false);
@@ -143,7 +190,7 @@ console.log(visibleProducts);
        
       
         
-        
+        console.log("djbdbfdb",visibleProducts);
         handleSearch(document.getElementById("search").value,false); // Use the final transcript to trigger search
       };
     } else {
@@ -174,6 +221,7 @@ console.log(visibleProducts);
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
+    window.parent.postMessage({ action: 'closeIframe' }, '*');
   };
   const handleToggleChange = (isToggleActive, toggleLabel) => {
     if (toggleLabel === languageDictionary[activelang].BuyMode) {
@@ -269,14 +317,13 @@ console.log(visibleProducts);
       {
         setIsBuyMode(false);
       }
-
-
       const sessionId = localStorage.getItem('session_id');
       if (!sessionId) {
         const newSessionId = generateRandomNumber(16);
         console.log(newSessionId);
         localStorage.setItem('session_id', newSessionId);
       }
+      const vpp=JSON.parse(localStorage.getItem('visibleProducts') || '[]');
       const sess=localStorage.getItem('session_id');
       console.log(sess);
       const searchId = generateRandomNumber(10);
@@ -299,7 +346,7 @@ console.log(visibleProducts);
       num_items: "10",
       session_id: sess.toString(),
      search_id:searchi.toString(),
-     products_in_viewport:  visibleProducts,
+     products_in_viewport:  vpp,
 
     });
 
@@ -319,7 +366,54 @@ console.log(visibleProducts);
       })
       .then((data) => {
         console.log(data)
-        if (data.api_action_status === "success") {
+        if (data.items.length === 0 && data.app_action.action_intent === 'save_wishlist') {
+          const productId = data.app_action.items;
+          const productKey = `product_${productId}`;
+          const product = localStorage.getItem(productKey);
+        
+          if (product) {
+            const productDetails =JSON.parse(product);
+            const Wishcart = JSON.parse(localStorage.getItem('Wish')) || [];
+            Wishcart.push(productDetails);
+            localStorage.setItem('Wish', JSON.stringify(Wishcart));
+            publish('WishcartUpdated', Wishcart);
+           
+            setIsWishMode(true);
+          } else {
+            console.error(`Product with ID ${productId} not found in local storage.`);
+          }
+        }
+        else if(data.items.length === 0 && data.app_action.action_intent === 'add_to_cart')
+        {
+          const productId = data.app_action.items;
+          const productKey = `product_${productId}`;
+          const product = localStorage.getItem(productKey);
+        
+          if (product) {
+            const productDetails = JSON.parse(product);
+
+            // Assuming the quantity is part of the search response
+            const quantity = Number(data.app_action.qty) || 1; // Use quantity from response or default to 1
+        
+            // Include quantity in product details
+            const updatedProductDetails = {
+              ...productDetails,
+              quantity: quantity
+            };
+        
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cart.push(updatedProductDetails);
+            localStorage.setItem('cart', JSON.stringify(cart));
+        
+            publish('cartUpdated', cart);
+        
+            setIsBuyMode(true);
+          } else {
+            console.error(`Product with ID ${productId} not found in local storage.`);
+          }
+
+        }
+       else  if (data.api_action_status === "success") {
           const languageMap = {
             hindi: 'hi',
             kannada: 'kn',
@@ -332,19 +426,32 @@ console.log(visibleProducts);
         
           const langSuffix = languageMap[activelang] || 'en'; // Default to English if no match
         
-          const fetchedProducts = data.items.map((item, index) => ({
-            id: index,
-            name: (item[`provider_name_${langSuffix}`] || item.provider_name).slice(0,15), // Default to provider_name if specific language is not available
-            img: item.image_link1,
-            description: (item[`product_name_${langSuffix}`] || item.product_name).slice(0,25), // Default to product_name if specific language is not available
-            description1: item[`product_name_${langSuffix}`] || item.product_name, // Default to product_name if specific language is not available
-            price: parseFloat(item.sale_price),
-            url: item.product_url,
-            score: item.score,
-            product_i: item.product_id,
-            originalPrice: parseFloat(item.price),
-            isVisible: false // Set isVisible to false for newly fetched products
-          }));
+     // Remove all products from local storage that have keys starting with 'product_'
+Object.keys(localStorage).forEach(key => {
+  if (key.startsWith('product_')) {
+    localStorage.removeItem(key);
+  }
+});
+
+const fetchedProducts = data.items.map((item, index) => ({
+  id: index,
+  name: (item[`provider_name_${langSuffix}`] || item.provider_name).slice(0, 15), // Default to provider_name if specific language is not available
+  img: item.image_link1,
+  description: (item[`product_name_${langSuffix}`] || item.product_name).slice(0, 25), // Default to product_name if specific language is not available
+  description1: item[`product_name_${langSuffix}`] || item.product_name, // Default to product_name if specific language is not available
+  price: parseFloat(item.sale_price),
+  url: item.product_url,
+  score: item.score,
+  product_i: item.product_id,
+  originalPrice: parseFloat(item.price),
+  isVisible: false // Set isVisible to false for newly fetched products
+}));
+
+// Store each product individually in local storage using its product_id as the key, prefixed with 'product_'
+fetchedProducts.forEach(product => {
+  localStorage.setItem(`product_${product.product_i}`, JSON.stringify(product));
+});
+
 
           // Convert description to title case
           fetchedProducts.forEach((product) => {
@@ -389,6 +496,11 @@ console.log(visibleProducts);
         setIsLoading(false); // End loading
         setSearchInitiated(false); 
         setInitialRender(false); 
+        setSearchKey(prevKey => prevKey + 1);
+        if(data.items.length !== 0 && data.app_action.action_intent !== 'save_wishlist')
+        {
+        setIsWishMode(false);
+        }
       })
       .catch((error) => {
         console.error("Failed to fetch:", error);
@@ -424,6 +536,7 @@ console.log(visibleProducts);
         setIsBuyMode(false)
       }
     console.log(product);
+    const vpp=JSON.parse(localStorage.getItem('visibleProducts') || '[]');
     const searchId = generateRandomNumber(10);
       localStorage.setItem('search_id', searchId);
       const searchi=localStorage.getItem('search_id');
@@ -445,7 +558,7 @@ console.log(visibleProducts);
        session_id: sess.toString(),
        product_id: product.product_i,
        search_id:searchi.toString(),
-       products_in_viewport:  visibleProducts,
+       products_in_viewport:  vpp,
        
     });
 
@@ -493,7 +606,7 @@ console.log(visibleProducts);
           }));
           fetchedProducts.forEach((produc) => {
             produc.description = produc.description.toLowerCase().split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-            produc.name = product.name.toLowerCase().split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            produc.name = produc.name.toLowerCase().split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
           });
 
           setProducts(fetchedProducts);
@@ -524,6 +637,11 @@ console.log(visibleProducts);
         }
         
         setIsLoading(false); // End loading
+        setSearchKey(prevKey => prevKey + 1);
+        if(data.items.length !== 0 && data.app_action.action_intent !== 'save_wishlist')
+          {
+          setIsWishMode(false);
+          }
       })
       .catch((error) => {
         console.error("Failed to fetch:", error);
@@ -551,6 +669,7 @@ console.log(visibleProducts);
     myHeaders.append("Content-Type", "application/json");
     const sess=localStorage.getItem('session_id');
     console.log(sess);
+    const vpp=JSON.parse(localStorage.getItem('visibleProducts') || '[]');
 
     const raw = JSON.stringify({
       prompt: product.description,
@@ -563,7 +682,7 @@ console.log(visibleProducts);
        num_items: "10",
        session_id: sess.toString(),
        search_id:searchi.toString(),
-       products_in_viewport:  visibleProducts,
+       products_in_viewport:  vpp,
     });
 
     const requestOptions = {
@@ -611,7 +730,7 @@ console.log(visibleProducts);
 
           fetchedProducts.forEach((produc) => {
             produc.description = produc.description.toLowerCase().split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-            product.name = product.name.toLowerCase().split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            product.name = produc.name.toLowerCase().split(' ').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
           });
 
           setProducts(fetchedProducts);
@@ -642,6 +761,12 @@ console.log(visibleProducts);
         }
         
         setIsLoading(false);
+        setSearchKey(prevKey => prevKey + 1);
+        if(data.items.length)
+          if(data.items.length !== 0 && data.app_action.action_intent !== 'save_wishlist')
+            {
+            setIsWishMode(false);
+            }
       })
       .catch((error) => {
         console.error("Failed to fetch:", error);
@@ -665,6 +790,7 @@ console.log(product.price);
       setShowPopup(true); // Show popup when starting
     }
     setIsListening(!isListening);
+    
   };
   const handleTagClick = (searchQuery) => {
     console.log(searchQuery);
@@ -703,6 +829,33 @@ console.log(product.price);
     setIsWishMode(true);
     
   }
+ 
+  const CustomPrevArrow = (props) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{ ...style, display: 'block', background: 'none' }}
+        onClick={onClick}
+      >
+        <img src={lefticon} alt="Previous" style={{ width: '30px', height: '30px' }} className='slickimgl'/>
+      </div>
+    );
+  };
+  
+  const CustomNextArrow = (props) => {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{ ...style, display: 'block', background: 'none' }}
+        onClick={onClick}
+      >
+        <img src={righticon} alt="Next" style={{ width: '30px', height: '30px' }} className='slickimg' />
+      </div>
+    );
+  };
+  
   const settings = {
     dots: false,
     infinite: true,
@@ -713,6 +866,8 @@ console.log(product.price);
     draggable: true,
     centerMode: true,
     centerPadding: '5%',
+    prevArrow: <CustomPrevArrow />,
+    nextArrow: <CustomNextArrow />,
     responsive: [
       {
         breakpoint: 768,
@@ -737,10 +892,7 @@ console.log(product.price);
    
     <div className="page-container">
      
-    <div className={`tg ${isOpen ? 'hidden' : ''}`}>
-    <div className='ellipse mike' onClick={toggleModal} style={{ backgroundColor: color }}></div>
-  <img src={mi} alt="" className='mi' onClick={toggleModal} />
-</div>
+    
 
 
       {isOpen && (
@@ -779,7 +931,7 @@ console.log(product.price);
                 </div>
                 
             <div className="similar-products">
-              <Slider {...settings}>
+              <Slider key={searchKey} {...settings}>
                 {products.map((product) => (
                   <Product 
                    product_id={product.product_i}
@@ -869,7 +1021,7 @@ console.log(product.price);
       )}
       {initialRender && isOpen &&(
         <div className="popup">
-          <p>Khojle: Jo Chahiye Woh Payiye</p>
+          <p>"Your AI Search Agent for ONDC Network"</p>
          
         </div>
         
