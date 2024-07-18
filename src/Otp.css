@@ -1,0 +1,107 @@
+.otp-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .otp-input-container {
+    display: flex;
+    justify-content: space-between;
+    
+  }
+  
+  .otp-input {
+    width: 32px;
+    height: 40px;
+    text-align: center;
+    font-size: 18px;
+    border: 1px solid  #4F4E4D;
+    border-radius: 3px;
+    margin: 0 5px;
+  }
+  
+  .timer {
+    margin-top: 2.5vh;
+    margin-bottom: 2vh;
+    right: 9vw;
+    position: relative;
+    /* margin: 10px 0; */
+    font-size: 14px;
+    color: #555;
+    font-family: Mulish;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 12.55px;
+    text-align: center;
+
+  }
+  
+  .login-button {
+    position: relative;
+    color: white;
+    width: 160px;
+    height: 40px;
+    top: -1vh;
+    padding: 10px 42px 10px 42px;
+    gap: 8px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-family: Mulish;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 17.57px;
+    text-align: center;
+  }
+  
+  .login-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .resend-text {
+    top: -2vh;
+    position: relative;
+    /* margin-top: 10px; */
+    font-size: 14px;
+    color: #121212
+    ;
+
+  
+font-family: Mulish;
+font-size: 14px;
+font-weight: 700;
+line-height: 17.57px;
+text-align: center;
+
+  }
+  
+  .resend-link {
+    top: -4vh;
+    position: relative;
+    color: #FF3E6B;
+    /* margin-top: 5px; */
+    /* font-size: 14px; */
+    /* color: #007bff; */
+    cursor: pointer;
+    font-family: Mulish;
+font-size: 14px;
+font-weight: 700;
+line-height: 17.57px;
+text-align: center;
+
+  }
+  .otp{
+    
+    top: -2vh;
+    right: 21vw;
+    position: relative;
+    font-family: Mulish;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 17.57px;
+    text-align: center;
+
+
+  }
+  

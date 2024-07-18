@@ -9,6 +9,8 @@ import Toggle from "./Toggle.js";
 import Cart from "./Cart.js";
 import Wishlist from './Wishlist.js';
 import Popup from './Popup.js';
+import Login from './Login.js';
+import Otp from './Otp.js';
 import './App.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesomeIcon
 import { faSearch } from '@fortawesome/free-solid-svg-icons'; // Import the search icon
@@ -101,6 +103,8 @@ function App() {
   const inputref = useRef(''); // To store the final transcript
   const fileInputRef = useRef(null);
   const [visibleProducts, setVisibleProducts] = useState([]);
+  const [isLoginMode, setIsLoginMode] = useState(false);
+  const [isOtpMode, setIsOtpMode] = useState(false);
   const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cart')) || []);
 
     useEffect(() => {
@@ -235,6 +239,14 @@ useEffect(() => {
       setIsWishMode(isToggleActive); // Update state based on toggle
       localStorage.setItem('WishMode', JSON.stringify(isToggleActive)); 
     }    
+  };
+  const handleCheckoutClick = () => {
+    setIsLoginMode(true);
+    setIsBuyMode(true);
+  };
+  const handleContinueClick = () => {
+    setIsOtpMode(true);
+    
   };
   const generateRandomNumber = (length) => {
     return Math.floor(Math.pow(10, length - 1) + Math.random() * 9 * Math.pow(10, length - 1));
@@ -988,8 +1000,13 @@ console.log(product.price);
               <Toggle label={languageDictionary[activelang].Wishmode} onToggleChange={handleToggleChange} defaultChecked={isWishMode}/>
               </div>
               <img src={line} alt="" className='line'/>
-              {isBuyMode ? (
-  <Cart color={color} />
+              {isOtpMode ? (
+        <Otp color={color} />
+      ) : isLoginMode ? (
+        <Login color={color} onContinueClick={handleContinueClick}/>
+        
+      ) : isBuyMode ? (
+  <Cart color={color} onCheckoutClick={handleCheckoutClick} />
 ) : isWishMode ? (
   <Wishlist color={color} />
 ) : (

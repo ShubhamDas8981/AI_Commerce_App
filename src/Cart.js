@@ -7,7 +7,7 @@ import { subscribe } from './pubsub';
 import lne from './images/Rectangle 8.svg';
 import verticalLine from './images/Line 4.svg';
 
-function Cart({color}) {
+function Cart({color,onCheckoutClick}) {
     const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cart')) || []);
 
     useEffect(() => {
@@ -106,7 +106,7 @@ function Cart({color}) {
       <span className="cart-summary">{totalItems} Item(s) | ₹{totalPrice}</span>
         <img src={lne} alt="" className='lne'/>
         <img src={verticalLine} alt="Vertical Line" className='vertical-line'/>
-        <button className="checkout-button" style={{ backgroundColor: color }}>Checkout</button>
+        <button className="checkout-button" style={{ backgroundColor: color }} onClick={onCheckoutClick}>Checkout</button>
       </div>
     </div>
     
