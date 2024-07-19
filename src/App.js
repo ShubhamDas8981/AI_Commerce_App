@@ -36,34 +36,34 @@ const languageDictionary = {
     aiAssistant: 'Your AI Commerce Assistance',
     recentSearches: 'Recent Searches',
     placeholder: 'Ask Cartesian',
-    chatModeLabel : "Chat Mode",
-    BuyMode : "Buy Mode",
-    Wishmode: "Wish Mode"
+    chatModeLabel : "Chat", 
+    BuyMode : "Buy",
+    Wishmode: "Wishlist"
   },
   hindi: {
     aiAssistant: 'आपका एआई वाणिज्य सहायक',
     recentSearches: 'हाल की खोजें',
     placeholder: 'कार्टेशियन से पूछें',
-    chatModeLabel : "चैट मोड",
-    BuyMode : "बाय मोड",
-     Wishmode: "विश मोड"
+    chatModeLabel : "चैट",
+    BuyMode : "बाय",
+     Wishmode: " इच्छा-सूची"
   },
   tamil: {
     aiAssistant: 'உங்கள் ஏஐ வர்த்தக உதவி',
     recentSearches: 'சமீபத்திய தேடல்கள்',
     placeholder: 'கார்டேசியனை கேளுங்கள்',
-    chatModeLabel :  "அரட்டை முறை",
-    BuyMode : "பாய் மோடு",
-     Wishmode: "விருப்ப முறை"
+    chatModeLabel :  "அரட்டை",
+    BuyMode : "பாய்",
+     Wishmode: "விருப்பப்பட்டியல்"
   },
   telugu: {
     aiAssistant: 'మీ ఏఐ వాణిజ్య సహాయం',
     recentSearches: 'ఇటీవలి శోధనలు',
     placeholder: 'కార్టేసియన్‌ని అడగండి',
-    chatModeLabel : "చాట్ మోడ్",                        
+    chatModeLabel : "చాట్",                        
 
-    BuyMode : "బాయ్ మోడ్",
-     Wishmode: "కోరిక మోడ్ "
+    BuyMode : "బాయ్",
+     Wishmode: "కోరికల జాబితా"
   },
 };
 
@@ -192,7 +192,12 @@ useEffect(() => {
         setShowPopup(false);
         // Hide popup when listening ends
        
-      
+        setVisibleProducts((prevVisibleProducts) => {
+          const reversedProducts = [...prevVisibleProducts].reverse();
+          console.log("First render reversed", reversedProducts);
+          localStorage.setItem('visibleProducts', JSON.stringify(reversedProducts));
+          return reversedProducts;
+        });
         
         console.log("djbdbfdb",visibleProducts);
         handleSearch(document.getElementById("search").value,false); // Use the final transcript to trigger search
@@ -471,7 +476,11 @@ useEffect(() => {
       })
       .then((data) => {
         console.log(data)
-        if (data.items.length === 0 && data.app_action.action_intent === 'save_wishlist') {
+        if(data.items.length === 0 && data.app_action.action_intent === 'checkout')
+        {
+           handleCheckoutClick();
+        }
+        else if (data.items.length === 0 && data.app_action.action_intent === 'save_wishlist') {
           const productId = data.app_action.items;
           const productKey = `product_${productId}`;
           const product = localStorage.getItem(productKey);

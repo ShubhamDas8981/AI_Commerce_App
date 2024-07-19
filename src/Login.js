@@ -9,6 +9,7 @@ function Login({ color , onContinueClick }) {
       onContinueClick(phone);
     } else {
       // Handle case where phone number is empty
+      alert("Phone number is required");
       console.error("Phone number is required");
     }
   };

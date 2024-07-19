@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React,  { useState, useEffect, useRef }  from 'react';
 import './Otp.css'; // Importing a CSS file for styling
 
 function Otp({ color, onLoginClick }) {
   const [otp, setOtp] = useState(['', '', '', '']);
   const [timer, setTimer] = useState(30); // 1 minute timer
-
+  const inputRefs = useRef([]);
   useEffect(() => {
     const countdown = setInterval(() => {
       setTimer(prevTimer => {
@@ -19,9 +19,17 @@ function Otp({ color, onLoginClick }) {
     return () => clearInterval(countdown);
   }, []);
   const handleOtpChange = (e, index) => {
-    const newOtp = [...otp];
-    newOtp[index] = e.target.value;
-    setOtp(newOtp);
+    const value = e.target.value;
+    if (/^\d*$/.test(value)) { // Ensure only digits are entered
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
+
+      // Move focus to the next input field if a digit is entered
+      if (value && index < inputRefs.current.length - 1) {
+        inputRefs.current[index + 1].focus();
+      }
+    }
   };
 
   const handleLogin = () => {
@@ -46,6 +54,7 @@ function Otp({ color, onLoginClick }) {
             className="otp-input"
             value={value}
             onChange={(e) => handleOtpChange(e, index)}
+            ref={el => inputRefs.current[index] = el}
           />
         ))}
       </div>
