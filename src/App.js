@@ -244,10 +244,103 @@ useEffect(() => {
     setIsLoginMode(true);
     setIsBuyMode(true);
   };
-  const handleContinueClick = () => {
-    setIsOtpMode(true);
+  const generateRandomId = (length) => {
+    const digits = '0123456789';
+    let id = '';
+    for (let i = 0; i < length; i++) {
+      id += digits[Math.floor(Math.random() * 10)];
+    }
+    return id;
+  };
+
+  const handleContinueClick = (phone) => {
+    const newLoginRequestId = generateRandomId(10);
+    localStorage.setItem('login_request_id', newLoginRequestId);
+    localStorage.setItem('phone', phone);
+
+    const raw = JSON.stringify({
+      phone: phone,
+      storefront_name: "craftsvilla.com",
+      login_request_id: newLoginRequestId
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: raw,
+      redirect: "follow"
+    };
+
+    fetch("https://cartesian-api.plotch.io/login/sendotp", requestOptions) // Replace with the actual API endpoint
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        console.log(response);
+        return response.json();
+
+      })
+      .then((data) => {
+        console.log(data);
+        if (data.api_action_status === "success") {
+          console.log("success");
+          setIsOtpMode(true);
+        } else {
+          // Handle error case
+          console.error("Failed to send OTP");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
     
   };
+  const handleLoginClick = (otp) => {
+    const loginRequestId = localStorage.getItem('login_request_id');
+    const phone=localStorage.getItem('phone')
+
+    const raw = JSON.stringify({
+      login_request_id: loginRequestId,
+      phone:phone,
+      storefront_name: "craftsvilla.com",
+      otp:otp
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: raw,
+      redirect: "follow"
+    };
+
+    fetch("https://cartesian-api.plotch.io/login/signin", requestOptions) // Replace with the actual API endpoint
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.api_action === "success") {
+          localStorage.setItem('login_session_token', data.login_session_token);
+            localStorage.setItem('login_session_expiry_time', data.login_session_expiry_time);
+          alert("Login successfull");
+          console.log("Login successful:", data);
+          // Handle successful login
+        } else {
+          // Handle error case
+          console.error("Failed to log in");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+
   const generateRandomNumber = (length) => {
     return Math.floor(Math.pow(10, length - 1) + Math.random() * 9 * Math.pow(10, length - 1));
   };
@@ -1001,7 +1094,7 @@ console.log(product.price);
               </div>
               <img src={line} alt="" className='line'/>
               {isOtpMode ? (
-        <Otp color={color} />
+        <Otp color={color} onLoginClick={handleLoginClick}  />
       ) : isLoginMode ? (
         <Login color={color} onContinueClick={handleContinueClick}/>
         
