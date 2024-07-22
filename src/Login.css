@@ -55,6 +55,21 @@ line-height: 15.06px;
 text-align: left;
 
   }
+  .mic-icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    top: -1vh;
+    position: relative;
+  }
+  .otp-action {
+   
+    left: 3vh;
+    position: relative;
+    column-gap: .5vh;
+    display: flex;
+    align-items: center;
+  }
   
   .continue-button {
     position: relative;

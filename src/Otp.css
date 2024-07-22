@@ -75,6 +75,21 @@ line-height: 17.57px;
 text-align: center;
 
   }
+  .mic-icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    top: -1vh;
+    position: relative;
+  }
+  .login-action {
+   
+    left: 3vh;
+    position: relative;
+    column-gap: .5vh;
+    display: flex;
+    align-items: center;
+  }
   
   .resend-link {
     top: -4vh;

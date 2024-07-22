@@ -23,6 +23,7 @@ import main from './images/WhatsApp Image 2024-07-03 at 14.07.35_149a3814.jpg';
 import mic from './images/mic.svg';
 import mi from './images/chatbubble-ellipses.svg';
 import line from './images/Line 6.svg';
+import Address from './Address.js';
 import thumbsUp from './images/Group 130.svg'; // Import the thumbs up image
 import thumbsDown from './images/Group 128.svg';
 import righticon from './images/Group 131.svg';
@@ -106,6 +107,7 @@ function App() {
   const [isLoginMode, setIsLoginMode] = useState(false);
   const [isOtpMode, setIsOtpMode] = useState(false);
   const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cart')) || []);
+  const [isAddressMode, setIsAddressMode] = useState(false); 
 
     useEffect(() => {
       const handleCartUpdate = (updatedCart) => {
@@ -192,12 +194,7 @@ useEffect(() => {
         setShowPopup(false);
         // Hide popup when listening ends
        
-        setVisibleProducts((prevVisibleProducts) => {
-          const reversedProducts = [...prevVisibleProducts].reverse();
-          console.log("First render reversed", reversedProducts);
-          localStorage.setItem('visibleProducts', JSON.stringify(reversedProducts));
-          return reversedProducts;
-        });
+      
         
         console.log("djbdbfdb",visibleProducts);
         handleSearch(document.getElementById("search").value,false); // Use the final transcript to trigger search
@@ -223,7 +220,12 @@ useEffect(() => {
   const storedChatMode = JSON.parse(localStorage.getItem('includeTagCloud'));
   if (storedChatMode !== null) {
     setIncludeTagCloud(storedChatMode);
-  }
+  }    setVisibleProducts((prevVisibleProducts) => {
+    const reversedProducts = [...prevVisibleProducts].reverse();
+    console.log("First render reversed", reversedProducts);
+    localStorage.setItem('visibleProducts', JSON.stringify(reversedProducts));
+    return reversedProducts;
+  });
     
     handleSearch("saree");
   }, []); // No need to include searchInput here, the effect should only run once
@@ -257,7 +259,45 @@ useEffect(() => {
     }
     return id;
   };
-
+const handleaddressclick=(addressInput)=>{
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  
+      const raw = JSON.stringify({
+        prompt: addressInput,
+        action_intent: "add_address",
+        model: "openai",
+        language: "en-us"
+      });
+  
+      const requestOptions = {
+        method: "POST",
+       headers: myHeaders,
+        body: raw,
+        redirect: "follow"
+      };
+  
+      fetch("https://cartesian-api.plotch.io/address/intent/fetch", requestOptions) // Replace with the actual API endpoint
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          if (data.api_action_status === "success") {
+            console.log("Address added successfully");
+            localStorage.setItem('address', JSON.stringify(data.filters));
+          } else {
+            console.error("Failed to add address");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+        console.log(raw);
+};
   const handleContinueClick = (phone) => {
     const newLoginRequestId = generateRandomId(10);
     localStorage.setItem('login_request_id', newLoginRequestId);
@@ -331,9 +371,10 @@ useEffect(() => {
       })
       .then((data) => {
         if (data.api_action === "success") {
+          setIsAddressMode(true);
           localStorage.setItem('login_session_token', data.login_session_token);
             localStorage.setItem('login_session_expiry_time', data.login_session_expiry_time);
-          alert("Login successfull");
+          
           console.log("Login successful:", data);
           // Handle successful login
         } else {
@@ -1102,7 +1143,9 @@ console.log(product.price);
               <Toggle label={languageDictionary[activelang].Wishmode} onToggleChange={handleToggleChange} defaultChecked={isWishMode}/>
               </div>
               <img src={line} alt="" className='line'/>
-              {isOtpMode ? (
+              {isAddressMode ? (
+        <Address color={color} onaddressclick={handleaddressclick} />
+      ) : isOtpMode ? (
         <Otp color={color} onLoginClick={handleLoginClick}  />
       ) : isLoginMode ? (
         <Login color={color} onContinueClick={handleContinueClick}/>

@@ -1,10 +1,72 @@
-import React,  { useState, useEffect, useRef }  from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Otp.css'; // Importing a CSS file for styling
+import mikead from './images/mikeadress.svg';
 
 function Otp({ color, onLoginClick }) {
   const [otp, setOtp] = useState(['', '', '', '']);
   const [timer, setTimer] = useState(30); // 1 minute timer
   const inputRefs = useRef([]);
+  const recognition = useRef(null);
+  const [isListening, setIsListening] = useState(false);
+  const otpRef = useRef(otp);
+  const [showPopup, setShowPopup] = useState(false); 
+  useEffect(() => {
+    otpRef.current = otp;
+  }, [otp]);
+
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window) {
+      recognition.current = new window.webkitSpeechRecognition();
+      recognition.current.continuous = false;
+      recognition.current.interimResults = true;
+
+      recognition.current.onresult = (event) => {
+        let interimTranscript = '';
+        let finalTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcriptPart = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcriptPart;
+          } else {
+            interimTranscript += transcriptPart;
+          }
+        }
+
+        const digits = (interimTranscript + finalTranscript).replace(/\D/g, '').split('');
+        setOtp((prevOtp) => {
+          const newOtp = [...prevOtp];
+          digits.forEach((digit, index) => {
+            if (index < 4) {
+              newOtp[index] = digit;
+            }
+          });
+          console.log(newOtp);
+          return newOtp;
+        });
+
+        // Move focus to the next empty input field
+        const nextEmptyIndex = digits.length;
+        if (nextEmptyIndex < 4 && inputRefs.current[nextEmptyIndex]) {
+          inputRefs.current[nextEmptyIndex].focus();
+        }
+      };
+
+      recognition.current.onstart = () => {
+        setShowPopup(true);
+        console.log('Voice recognition started');
+      };
+
+      recognition.current.onend = () => {
+        console.log('Voice recognition ended');
+        console.log('OTP:', otpRef.current);
+        onLoginClick(otpRef.current.join(''));
+        setIsListening(false);
+      };
+    } else {
+      console.error('Your browser does not support speech recognition.');
+    }
+  }, []);
+
   useEffect(() => {
     const countdown = setInterval(() => {
       setTimer(prevTimer => {
@@ -18,6 +80,7 @@ function Otp({ color, onLoginClick }) {
 
     return () => clearInterval(countdown);
   }, []);
+
   const handleOtpChange = (e, index) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) { // Ensure only digits are entered
@@ -35,10 +98,19 @@ function Otp({ color, onLoginClick }) {
   const handleLogin = () => {
     const enteredOtp = otp.join('');
     if (enteredOtp.length === 4) {
+      console.log(enteredOtp);
       onLoginClick(enteredOtp);
     } else {
       // Handle case where OTP is incomplete
+      console.log(enteredOtp.length);
       console.error("Incomplete OTP");
+    }
+  };
+
+  const handleMicClick = () => {
+    if (recognition.current) {
+      setIsListening(true);
+      recognition.current.start();
     }
   };
 
@@ -46,7 +118,7 @@ function Otp({ color, onLoginClick }) {
     <div className="otp-container">
       <h2 className='otp'>OTP</h2>
       <div className="otp-input-container">
-      {otp.map((value, index) => (
+        {otp.map((value, index) => (
           <input
             key={index}
             type="text"
@@ -59,10 +131,22 @@ function Otp({ color, onLoginClick }) {
         ))}
       </div>
       <p className="timer">{timer} seconds remaining</p>
-      <button className="login-button" style={{ backgroundColor: color }}  onClick={handleLogin} >Login</button>
+      <div className='login-action'>
+        <button className="login-button" style={{ backgroundColor: color }} onClick={handleLogin}>Login</button>
+        <img
+          src={mikead} // Replace with your mic icon URL
+          alt="Mic"
+          className="mic-icon"
+          onClick={handleMicClick}
+        />
+      </div>
       <p className="resend-text">Didn't receive OTP?</p>
       <p className="resend-link">Resend OTP</p>
-
+      {showPopup && (
+        <div className="popup">
+          <p>Please speak now...</p>
+        </div>
+      )}
     </div>
   );
 }
