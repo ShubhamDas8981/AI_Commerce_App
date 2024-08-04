@@ -8,10 +8,12 @@ import Searches from './Searches.js';
 import Toggle from "./Toggle.js";
 import Cart from "./Cart.js";
 import Wishlist from './Wishlist.js';
+import Final from './Final.js';
 import Popup from './Popup.js';
 import Login from './Login.js';
 import Otp from './Otp.js';
 import './App.css';
+import Order from './Order.js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'; // Import FontAwesomeIcon
 import { faSearch } from '@fortawesome/free-solid-svg-icons'; // Import the search icon
 import placeholderImage from './images/prod_default.png';
@@ -28,6 +30,8 @@ import thumbsUp from './images/Group 130.svg'; // Import the thumbs up image
 import thumbsDown from './images/Group 128.svg';
 import righticon from './images/Group 131.svg';
 import lefticon from './images/Group 132 (2).svg'; // Import the thumbs down image
+import mikead from './images/mikeadress.svg'
+import homeIcon from './images/home.svg';
 
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -82,7 +86,7 @@ function App() {
   ];
   
   
-  
+  const [address, setAddress] = useState(JSON.parse(localStorage.getItem('address')) || {});
   const [activeModel, setActiveModel] = useState('openai');
   const [activelang, setActivelang] = useState(localStorage.getItem('activelang') || 'english');
   const [popupData, setPopupData] = useState(null);
@@ -105,9 +109,17 @@ function App() {
   const fileInputRef = useRef(null);
   const [visibleProducts, setVisibleProducts] = useState([]);
   const [isLoginMode, setIsLoginMode] = useState(false);
+  const [isOrderMode, setIsOrderMode] = useState(false);
   const [isOtpMode, setIsOtpMode] = useState(false);
   const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cart')) || []);
   const [isAddressMode, setIsAddressMode] = useState(false); 
+  const [phone, setPhone] = useState(localStorage.getItem('phone') || '');
+  const [showPop, setShowPop] = useState(false);
+  const [isFinalMode, setIsFinalMode] = useState(false); 
+  const [orderResponse, setOrderResponse] = useState(null);
+  const [showP,setShowP]=useState(false);
+ 
+  const totalPrice = localStorage.getItem('tp') || 0;
 
     useEffect(() => {
       const handleCartUpdate = (updatedCart) => {
@@ -188,22 +200,26 @@ useEffect(() => {
       };
 
       recognition.current.onend = () => {
-        setIsListening(false);
-        console.log('Voice recognition ended');
+        setTimeout(()=>{  setIsListening(false);
+          console.log('Voice recognition ended');
+          
+          setShowPopup(false);
+          // Hide popup when listening ends
+         
         
-        setShowPopup(false);
-        // Hide popup when listening ends
-       
-      
-        
-        console.log("djbdbfdb",visibleProducts);
-        handleSearch(document.getElementById("search").value,false); // Use the final transcript to trigger search
+          
+          console.log("djbdbfdb",visibleProducts);
+        //  storeSearchTerm(document.getElementById("search").value);
+          handleSearch(document.getElementById("search").value,false);},4000);
+          
+       // Use the final transcript to trigger search
       };
     } else {
       console.error('Your browser does not support speech recognition.');
     }
     // Retrieve recent searches from local storage on mount
     const storedSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+    console.log("ser",storedSearches);
     setRecentSearches(storedSearches); 
     const storedTagCloud = JSON.parse(localStorage.getItem('tagCloud')) || {};
     setTagCloud(storedTagCloud);
@@ -248,9 +264,74 @@ useEffect(() => {
     }    
   };
   const handleCheckoutClick = () => {
-    setIsLoginMode(true);
-    setIsBuyMode(true);
+    const loginSessionToken = localStorage.getItem('login_session_token');
+    const storedAddress = localStorage.getItem('address'); // Assuming 'address' is the key used to store address details
+  
+    if (loginSessionToken && storedAddress) {
+      setIsOrderMode(true);
+    } else if (loginSessionToken && !storedAddress) {
+      setIsAddressMode(true);
+     
+    } else {
+      setIsLoginMode(true);
+      setIsBuyMode(true);
+    }
   };
+  const generateOrderRequestId = () => {
+    return Math.floor(1000000000 + Math.random() * 9000000000).toString();
+  };
+  const handleorderclick=()=>{
+    const orderRequestId = generateOrderRequestId();
+    const loginSessionToken = localStorage.getItem('login_session_token');
+    const phone = localStorage.getItem('phone');
+   // const referralId = localStorage.getItem('referral_id') || 'defaultReferralId'; // Assuming referral ID is stored or provide a default value
+
+    const orderItems = cartItems.map(item => ({
+      product_id: item.product_id,
+      product_name: item.name,
+      sale_price: item.price,
+      qty: item.quantity,
+    }));
+
+    const requestBody = {
+      phone: phone,
+      storefront_name: "craftsvilla.com",
+      order_request_id: orderRequestId,
+      login_session_token: loginSessionToken,
+      order_value: totalPrice,
+      referral_id: "",
+      customer_name: address.customer_name,
+      customer_email: address.customer_email,
+      address: address,
+      order_items: orderItems,
+    };
+
+    // API call
+    fetch('https://cartesian-api.plotch.io/order/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.api_action_status === "success") {
+          // Handle success scenario
+          setOrderResponse(data);
+                setIsFinalMode(true);
+          console.log('Order placed successfully:', data);
+          // You can clear the cart or show a success message
+        } else {
+          // Handle error scenario
+          console.error('Failed to place order:', data);
+        }
+      })
+      .catch(error => {
+        console.error('Error placing order:', error);
+      });
+
+  }
   const generateRandomId = (length) => {
     const digits = '0123456789';
     let id = '';
@@ -260,6 +341,7 @@ useEffect(() => {
     return id;
   };
 const handleaddressclick=(addressInput)=>{
+  setShowP(true);
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
   
@@ -289,6 +371,9 @@ const handleaddressclick=(addressInput)=>{
           if (data.api_action_status === "success") {
             console.log("Address added successfully");
             localStorage.setItem('address', JSON.stringify(data.filters));
+            setAddress(JSON.parse(localStorage.getItem('address')));
+            setShowP(false);
+            setShowPop(true);
           } else {
             console.error("Failed to add address");
           }
@@ -296,9 +381,21 @@ const handleaddressclick=(addressInput)=>{
         .catch((error) => {
           console.error("Error:", error);
         });
-        console.log(raw);
+      
+       
+      console.log(raw);
 };
+const handleConfirm = () => {
+   setIsOrderMode(true);
+  setShowPop(false);
+ 
+};
+const handleClosePop= () => {
+  setShowPop(false);
+};
+
   const handleContinueClick = (phone) => {
+    setPhone(phone);
     const newLoginRequestId = generateRandomId(10);
     localStorage.setItem('login_request_id', newLoginRequestId);
     localStorage.setItem('phone', phone);
@@ -318,7 +415,7 @@ const handleaddressclick=(addressInput)=>{
       redirect: "follow"
     };
 
-    fetch("https://cartesian-api.plotch.io/login/sendotp", requestOptions) // Replace with the actual API endpoint
+    fetch("https://cartesian-api.plotch.io/login/sendotp", requestOptions) // Replace with the actual API endpointhttps://cartesian-api.plotch.io/order/create/
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -371,13 +468,19 @@ const handleaddressclick=(addressInput)=>{
       })
       .then((data) => {
         if (data.api_action === "success") {
+          const storedAddress = localStorage.getItem('address');
+          if(storedAddress)
+          {
+            setIsOrderMode(true);
+          }
+          else{
           setIsAddressMode(true);
+          }
           localStorage.setItem('login_session_token', data.login_session_token);
             localStorage.setItem('login_session_expiry_time', data.login_session_expiry_time);
-          
-          console.log("Login successful:", data);
+            console.log("Login successful:", data);
           // Handle successful login
-        } else {
+} else {
           // Handle error case
           console.error("Failed to log in");
         }
@@ -674,7 +777,9 @@ fetchedProducts.forEach(product => {
   const storeSearchTerm = (term) => {
     if(term !== "saree" && term!=="")
       {
+        console.log("searchhh",recentSearches);
     const updatedSearches = [term, ...recentSearches.filter(search => search !== term)].slice(0, 3);
+    console.log(updatedSearches);
     setRecentSearches(updatedSearches);
     localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
       }
@@ -1143,7 +1248,13 @@ console.log(product.price);
               <Toggle label={languageDictionary[activelang].Wishmode} onToggleChange={handleToggleChange} defaultChecked={isWishMode}/>
               </div>
               <img src={line} alt="" className='line'/>
-              {isAddressMode ? (
+              {isFinalMode ? (
+        <Final  onPlaceClick={handleorderclick}  orderId={orderResponse.order_id}/>
+      ) : 
+              isOrderMode ? (
+        <Order color={color} onPlaceClick={handleorderclick}  />
+      ) : 
+              isAddressMode ? (
         <Address color={color} onaddressclick={handleaddressclick} />
       ) : isOtpMode ? (
         <Otp color={color} onLoginClick={handleLoginClick}  />
@@ -1181,6 +1292,11 @@ console.log(product.price);
           <p>Please speak now...</p>
         </div>
       )}
+      {showP && (
+        <div className="popup">
+          <p>Updating Address...</p>
+        </div>
+      )}
       {initialRender && isOpen &&(
         <div className="popup">
           <p>"Your AI Search Agent for ONDC Network"</p>
@@ -1199,6 +1315,32 @@ console.log(product.price);
           name={popupData.description1}
           onClose={handleClosePopup}
         />
+      )}
+      {showPop && (
+        <div className="pop">
+     
+          <h2 className='ad-text'>Address</h2>
+          <button className="popup-close" onClick={handleClosePop}>✖</button>
+          <div className="address-content">
+            <img src={homeIcon} alt="Home Icon" className="home-icon" />
+            <div className="address-details">
+              <p className='pincode'>{address.pincode}-Home</p>
+              <p className='add-det'> {address.house_number && `${address.house_number}, `}
+                {address.locality && `${address.locality}, `}
+                {address.city && `${address.city}, `}
+                {address.state && `${address.state}, `}
+                {address.country && `${address.country}`}</p>
+              <p className='phonn'> {`${address.customer_name} (${phone})`}</p>
+              <p className='edit-delete'>
+                <span className="edit-link">Edit</span>   <span className="pipe">|</span> <span className="delete-link">Delete</span>
+              </p>
+              <div className="confirm-action">
+                <button className="confirm-button" onClick={handleConfirm} style={{ backgroundColor: color }}>Confirm</button>
+                <img src={mikead} alt="Mic" className="mic-ico" />
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
     

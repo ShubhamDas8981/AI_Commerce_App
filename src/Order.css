@@ -47,7 +47,7 @@ text-align: left;
     margin-top: 20px;
   }
   
-  .cart-ite {
+  .cart-it {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
@@ -56,13 +56,13 @@ text-align: left;
 
   }
   
-  .cart-item-imag {
+  .cart-item-ima {
     width: 50px;
     height: 50px;
    
   }
   
-  .cart-item-detail {
+  .cart-item-detai {
     top: -2.2vh;
     position: relative;
     /* justify-content: end; */
@@ -71,7 +71,7 @@ text-align: left;
 }
  
   
-  .cart-item-nam {
+  .cart-item-na {
     font-family: Mulish;
     font-size: 10px;
     font-weight: 400;
@@ -211,3 +211,86 @@ line-height: 17.57px;
 text-align: left;
 
     }
+    .address-{
+        top: 0.8vh;
+        font-family: Mulish;
+        font-size: 12px;
+        font-weight: 700;
+        /* line-height: 15.06px; */
+        /* text-align: center; */
+        position: relative;
+        /* white-space: nowrap; */
+        /* overflow: hidden; */
+        /* text-overflow: ellipsis; */
+        flex: 1;
+        left: 2.5vh;
+    }
+    .deliver-to{
+        top: 0.7vh;
+    position: relative;
+    font-family: Mulish;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 15.06px;
+    /* left: -27vh; */
+    left: 2vh;
+
+    }
+    .delivery-info {
+        border: 1px solid #EDECEC;
+        left: -2vh;
+        /* justify-content: flex-start; */
+        position: fixed;
+        bottom: 7.75vh;
+        width: 101%;
+        height: 64px;
+        background-color: #FFF6F6;
+        display: flex;
+        flex-direction: column;
+        padding: 0 16px;
+        /* box-shadow: 0px 4px 2px -2px gray; */
+        z-index: 10;
+      }
+      
+      .delivery-info-top {
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+        margin-top: 0.7vh;
+    margin-bottom: 2vh;
+      }
+      
+      .delivery-info-bottom {
+       
+        width: 100%;
+        position: relative;
+        /* top: 89vh; */
+        /* justify-content: left; */
+        left: 2vh;
+        /* position: fixed; */
+        /* font-size: 0.9em; */
+        font-family: Mulish;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 15.06px;
+      }
+      
+      .change-address {
+        left: -4vh;
+        top: 0.6vh;
+        position: relative;
+        color: #FF3E6B;
+        cursor: pointer;
+        font-family: Mulish;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 15.06px;
+        text-align: center;
+        cursor: pointer;
+      }
+      
+      .cart-page {
+        position: relative;
+       /* To ensure the new delivery info box does not overlap the content */
+      }
+      

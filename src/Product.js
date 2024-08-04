@@ -144,7 +144,7 @@ function Product({product_id, key, img, name, description,description1, price, o
   };
 
   const handleAddToCart = () => {
-    const productDetails = { key, img, description1, price, originalPrice, quantity: 1 };
+    const productDetails = { key, img, description1, price, originalPrice, quantity: 1,product_id,name };
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     cart.push(productDetails);
     localStorage.setItem('cart', JSON.stringify(cart));

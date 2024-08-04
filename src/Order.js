@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './Cart.css';
+import './Order.css';
 import cartImage from './images/bag.svg';
 import dustbin from './images/trash.svg';
 import cartIcon from './images/chevron-down.svg';
@@ -7,9 +7,10 @@ import { subscribe } from './pubsub';
 import lne from './images/Rectangle 8.svg';
 import verticalLine from './images/Line 4.svg';
 
-function Cart({color,onCheckoutClick}) {
+function Order({color,onPlaceClick}) {
     const [cartItems, setCartItems] = useState(JSON.parse(localStorage.getItem('cart')) || []);
-
+    const address = JSON.parse(localStorage.getItem('address')) || {};
+    const [phone, setPhone] = useState(localStorage.getItem('phone') || '');
     useEffect(() => {
       const handleCartUpdate = (updatedCart) => {
         setCartItems(updatedCart);
@@ -32,6 +33,14 @@ function Cart({color,onCheckoutClick}) {
         localStorage.setItem('cart', JSON.stringify(updatedCart));
         // Publish cart update event if using pubsub for global state management
       };
+      const truncateAddress = (address) => {
+        const fullAddress = `${address.house_number && `${address.house_number}, `}
+          ${address.locality && `${address.locality}, `}
+          ${address.city && `${address.city}, `}
+          ${address.state && `${address.state}, `}
+          ${address.country && `${address.country}`}`;
+        return fullAddress.length > 100 ? `${fullAddress.slice(0, 100)}...` : fullAddress;
+      };
       const handleRemoveItem = (index) => {
         const updatedCart = [...cartItems];
         updatedCart.splice(index, 1);
@@ -39,9 +48,21 @@ function Cart({color,onCheckoutClick}) {
         localStorage.setItem('cart', JSON.stringify(updatedCart));
       };
       const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+      
       const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+      localStorage.setItem('tp',totalPrice);
   return (
     <div className="cart-page">
+     <div className="delivery-info">
+        <div className="delivery-info-top">
+        <span className="deliver-to">Deliver to:</span> 
+        <span className="address-">{`${address.customer_name} (Home)`}</span>
+          <span className="change-address">CHANGE</span>
+        </div>
+        <div className="delivery-info-bottom">
+          {truncateAddress(address)}
+        </div>
+      </div>
      <div className="cart-container">
         <div className="left-section">
           <img 
@@ -61,15 +82,15 @@ function Cart({color,onCheckoutClick}) {
         {cartItems.length > 0 ? (
           cartItems.map((item, index) => (
             
-            <div key={index} className="cart-ite">
+            <div key={index} className="cart-it">
               <img 
                 src={item.img} 
                 alt={item.description} 
-                className="cart-item-imag" 
+                className="cart-item-ima" 
               />
-              <div className="cart-item-detail">
+              <div className="cart-item-detai">
               
-                <span className="cart-item-nam"> {item.description1.slice(0, 35)} </span>
+                <span className="cart-item-na"> {item.description1.slice(0, 35)} </span>
                 
                   
                   
@@ -106,11 +127,11 @@ function Cart({color,onCheckoutClick}) {
       <span className="cart-summary">{totalItems} Item(s) | ₹{totalPrice}</span>
         <img src={lne} alt="" className='lne'/>
         <img src={verticalLine} alt="Vertical Line" className='vertical-line'/>
-        <button className="checkout-button" style={{ backgroundColor: color }} onClick={onCheckoutClick}>Checkout</button>
+        <button className="checkout-button" style={{ backgroundColor: color }} onClick={onPlaceClick}>Place Order</button>
       </div>
     </div>
     
   );
 }
 
-export default Cart;
+export default Order;

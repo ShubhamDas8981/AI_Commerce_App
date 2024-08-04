@@ -57,10 +57,10 @@ function Otp({ color, onLoginClick }) {
       };
 
       recognition.current.onend = () => {
-        console.log('Voice recognition ended');
+       setTimeout(()=>{ console.log('Voice recognition ended');
         console.log('OTP:', otpRef.current);
         onLoginClick(otpRef.current.join(''));
-        setIsListening(false);
+        setIsListening(false);},4000)
       };
     } else {
       console.error('Your browser does not support speech recognition.');

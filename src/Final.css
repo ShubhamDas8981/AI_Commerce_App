@@ -1,0 +1,43 @@
+.final-container {
+    text-align: center;
+    font-family: Mulish, sans-serif;
+}
+
+.order-id {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 30.12px;
+   
+    height: 30px;
+    margin-top: 1vh;
+}
+
+.order-status {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20.08px;
+    color: #FF6746;
+    width: 325px;
+    height: 45px;
+    margin-top: 3vh;
+}
+
+.order-info {
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 15.06px;
+    width: 294px;
+    height: 90px;
+    margin: 10px auto;
+}
+
+.support-info {
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 15.06px;
+    width: 294px;
+    height: 15px;
+    margin: 10px auto;
+}

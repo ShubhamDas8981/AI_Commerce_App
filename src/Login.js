@@ -37,10 +37,11 @@ function Login({ color, onContinueClick }) {
       };
 
       recognition.current.onend = () => {
-        setIsListening(false);
-        console.log('Voice recognition ended');
-                  onContinueClick(document.getElementById("phoni").value);
-       
+        setTimeout(() => {
+          setIsListening(false);
+          console.log('Voice recognition ended');
+          onContinueClick(document.getElementById("phoni").value);
+        }, 4000);
       };
     } else {
       console.error('Your browser does not support speech recognition.');

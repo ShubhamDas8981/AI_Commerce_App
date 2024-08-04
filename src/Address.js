@@ -4,8 +4,10 @@ import mikead from './images/mikeadress.svg'
 
 function Address({ color ,onaddressclick}) {
   const [addressInput, setAddressInput] = useState('');
-
+  
   const [showPopup, setShowPopup] = useState(false); 
+  const timeoutId = useRef(null); // Ref for timeout
+
   const recognition = useRef(null);
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -29,17 +31,24 @@ function Address({ color ,onaddressclick}) {
         }
 
         setAddressInput( interimTranscript + finalTranscript);
+       
+      
       };
+      
 
       recognition.current.onstart = () => {
         setShowPopup(true);        console.log('Voice recognition started');
       };
 
       recognition.current.onend = () => {
-     
+       setTimeout(()=>{
         console.log('Voice recognition ended');
-        onaddressclick(addressInput);
+        onaddressclick(document.getElementById("address").value);
         setShowPopup(false);
+
+       },4000);
+      
+       
       };
 
       recognition.current.start();
@@ -56,6 +65,7 @@ function Address({ color ,onaddressclick}) {
     <div className="address-container">
       <h3>Address</h3>
       <textarea
+      id="address"
         className="address-input"
         placeholder="Enter Full address"
         value={addressInput}
@@ -77,6 +87,7 @@ function Address({ color ,onaddressclick}) {
           <p>Please speak now...</p>
         </div>
       )}
+      
     </div>
   );
 }
