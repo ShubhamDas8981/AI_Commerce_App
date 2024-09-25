@@ -1,0 +1,39 @@
+{
+  "files": {
+    "main.css": "/AI_Commerce_App/static/css/main.46408084.css",
+    "main.js": "/AI_Commerce_App/static/js/main.fbdcae8f.js",
+    "static/js/845.4e9c8a8e.chunk.js": "/AI_Commerce_App/static/js/845.4e9c8a8e.chunk.js",
+    "static/media/WhatsApp Image 2024-07-03 at 14.07.35_149a3814.jpg": "/AI_Commerce_App/static/media/WhatsApp Image 2024-07-03 at 14.07.35_149a3814.4acc9034ef74b9a6e9ac.jpg",
+    "service-worker.js": "/AI_Commerce_App/service-worker.js",
+    "static/media/Group 130.svg": "/AI_Commerce_App/static/media/Group 130.7195482582889caac548a3ea5cd41d12.svg",
+    "static/media/Group 128.svg": "/AI_Commerce_App/static/media/Group 128.a60c242bd25f62b5ffbfc59f3b018eb1.svg",
+    "static/media/slick.svg": "/AI_Commerce_App/static/media/slick.2630a3e3eab21c607e21.svg",
+    "static/media/slick.eot": "/AI_Commerce_App/static/media/slick.a4e97f5a2a64f0ab1323.eot",
+    "static/media/slick.ttf": "/AI_Commerce_App/static/media/slick.c94f7671dcc99dce43e2.ttf",
+    "static/media/chatbubble-ellipses.svg": "/AI_Commerce_App/static/media/chatbubble-ellipses.1dae2e169bed7ce58abd8c227dec968a.svg",
+    "static/media/slick.woff": "/AI_Commerce_App/static/media/slick.295183786cd8a1389865.woff",
+    "static/media/trash.svg": "/AI_Commerce_App/static/media/trash.fa76fcd0254e5045c561acdc526cd4fc.svg",
+    "static/media/Group 139 (1).svg": "/AI_Commerce_App/static/media/Group 139 (1).606c3fc981c8662607cee3f3aee1feaf.svg",
+    "static/media/image.svg": "/AI_Commerce_App/static/media/image.0e156f546dfe6dd933d2d8c447c0092c.svg",
+    "static/media/mikeadress.svg": "/AI_Commerce_App/static/media/mikeadress.5cfbadf3118d659d3716ddee5915349d.svg",
+    "static/media/mic.svg": "/AI_Commerce_App/static/media/mic.70526dc5033a0b22709d639e3e6706d1.svg",
+    "static/media/home.svg": "/AI_Commerce_App/static/media/home.be25e64fd239e2218534f4d224a3f8a8.svg",
+    "static/media/Group 141 (1).svg": "/AI_Commerce_App/static/media/Group 141 (1).c3239bfea6d2b63f6cf5432ec38098e2.svg",
+    "static/media/bag.svg": "/AI_Commerce_App/static/media/bag.695e1b6753d3efcbb34b902994a8a808.svg",
+    "index.html": "/AI_Commerce_App/index.html",
+    "static/media/Group 132 (1).svg": "/AI_Commerce_App/static/media/Group 132 (1).43a67260b366889bbe4543d06ebe0f2f.svg",
+    "static/media/Group 131.svg": "/AI_Commerce_App/static/media/Group 131.4157a5616c8a788380a30a6810add088.svg",
+    "static/media/Group 132 (2).svg": "/AI_Commerce_App/static/media/Group 132 (2).780d3b8e1cdc412f42e90d25956ed647.svg",
+    "static/media/chevron-down.svg": "/AI_Commerce_App/static/media/chevron-down.b029e6ac3866ad2d62a6bda9460877c0.svg",
+    "static/media/Rectangle 8.svg": "/AI_Commerce_App/static/media/Rectangle 8.1a41118c270c7e95862e30470ce4fced.svg",
+    "static/media/Line 6.svg": "/AI_Commerce_App/static/media/Line 6.851aea4dec42be23421997433cabaf89.svg",
+    "static/media/Line 4.svg": "/AI_Commerce_App/static/media/Line 4.1ed9c0bc287190e2b6b1f1e816f3f565.svg",
+    "main.46408084.css.map": "/AI_Commerce_App/static/css/main.46408084.css.map",
+    "main.fbdcae8f.js.map": "/AI_Commerce_App/static/js/main.fbdcae8f.js.map",
+    "845.4e9c8a8e.chunk.js.map": "/AI_Commerce_App/static/js/845.4e9c8a8e.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.46408084.css",
+    "static/js/main.fbdcae8f.js"
+  ]
+}
