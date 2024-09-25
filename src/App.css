@@ -718,3 +718,50 @@ input::placeholder{
 }
 
 
+.suggestions-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-top: none;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.suggestions-list li {
+  padding: 10px;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+}
+
+.suggestions-list li:hover {
+  background-color: #f0f0f0;
+}
+
+.active-suggestion {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  color: grey;
+}
+.suggestions-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-top: none;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.suggestions-list li {
+  padding: 10px;
+  cursor: pointer;
+  font-family: Arial, sans-serif;
+}
+
+.suggestions-list li:hover, .active-suggestion {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  color: black;
+}
+

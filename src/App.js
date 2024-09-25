@@ -118,6 +118,12 @@ function App() {
   const [isFinalMode, setIsFinalMode] = useState(false); 
   const [orderResponse, setOrderResponse] = useState(null);
   const [showP,setShowP]=useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(0);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [defaultSuggestion, setDefaultSuggestion] = useState('');
+  const [debounceTimer, setDebounceTimer] = useState(null);
+  
  
   const totalPrice = localStorage.getItem('tp') || 0;
 
@@ -245,7 +251,11 @@ useEffect(() => {
     
     handleSearch("saree");
   }, []); // No need to include searchInput here, the effect should only run once
-
+  useEffect(() => {
+    if (searchInput !== defaultSuggestion) {
+        setDefaultSuggestion('');
+    }
+}, [searchInput]);
   const toggleModal = () => {
     setIsOpen(!isOpen);
     window.parent.postMessage({ action: 'closeIframe' }, '*');
@@ -495,17 +505,48 @@ const handleClosePop= () => {
   };
   
   const handleSearchInputChange = (event) => {
-    setSearchInput(event.target.value);
-  };
+    const query = event.target.value;
+    setSearchInput(query);
 
-  const handleKeyPress = (event) => { 
-    if (event.key === 'Enter') {
-      
-      handleSearch(document.getElementById("search").value,false);
-      event.target.blur();
-      
+    if (debounceTimer) {
+        clearTimeout(debounceTimer);
     }
-  };
+
+    const timer = setTimeout(() => {
+        if (query.length > 0) {
+            fetchSuggestions(query);
+        } else {
+            setSuggestions([]);
+            setShowSuggestions(false);
+            setDefaultSuggestion('');
+        }
+    }, 1); // Adjust debounce time as needed
+
+    setDebounceTimer(timer);
+};
+
+const fetchSuggestions = async (query) => {
+  try {
+      const response = await fetch('https://cartesian-api.plotch.io/search/suggestions', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ query, num_suggestion: 10 }),
+      });
+      const data = await response.json();
+      if (data.api_action_status === 'success') {
+          setSuggestions(data.suggestions);
+          setShowSuggestions(true);
+          setActiveSuggestionIndex(0);
+          setDefaultSuggestion(data.suggestions[0]?.result_query || '');
+      }
+  } catch (error) {
+      console.error('Error fetching suggestions:', error);
+  }
+};
+
+
   const handleInfoClick = (product) => {
     setPopupData(product);
   };
@@ -1115,7 +1156,44 @@ console.log(product.price);
       </div>
     );
   };
-  
+  const handleSuggestionClick = (suggestion) => {
+    
+    setSearchInput('');
+    handleSearch(suggestion, false);
+     // Trigger the search immediately
+    setSuggestions([]);
+    setShowSuggestions(false);
+};
+
+const handleKeyDown = (event) => {
+  if (event.key === 'ArrowDown') {
+      if (activeSuggestionIndex < suggestions.length - 1) {
+          setActiveSuggestionIndex(activeSuggestionIndex + 1);
+          setDefaultSuggestion(suggestions[activeSuggestionIndex + 1].result_query);
+      }
+  } else if (event.key === 'ArrowUp') {
+      if (activeSuggestionIndex > 0) {
+          setActiveSuggestionIndex(activeSuggestionIndex - 1);
+          setDefaultSuggestion(suggestions[activeSuggestionIndex - 1].result_query);
+      }
+  } else if (event.key === 'Enter') {
+    handleSearch(searchInput, false);
+    setSuggestions([]);
+    setShowSuggestions(false);
+      event.target.blur(); // Remove focus from input
+  }
+  else if (event.key === 'Tab') {
+    // If user presses Tab, select the current active suggestion
+    if (activeSuggestionIndex >= 0) {
+        setSearchInput(suggestions[activeSuggestionIndex].result_query);
+        setSuggestions([]);
+        setShowSuggestions(false);
+    }
+}
+};
+
+
+
   const settings = {
     dots: false,
     infinite: true,
@@ -1213,16 +1291,35 @@ console.log(product.price);
                 ))}
               </Slider>
               <div className="search-bar-container">
-                <input
-                  type="text"
-                  id="search"
-                  placeholder={languageDictionary[activelang].placeholder}
-                  className="search-bar"
-                  value={searchInput}
-                  onKeyPress={handleKeyPress}
-                  onChange={handleSearchInputChange}
-                  ref={inputref}
-                />
+              <input
+    type="text"
+    id="search"
+    placeholder={languageDictionary[activelang].placeholder}
+    className="search-bar"
+    value={searchInput}
+    onKeyDown={handleKeyDown}
+    onChange={handleSearchInputChange}
+    ref={inputref}
+    style={{ color: searchInput === defaultSuggestion ? 'grey' : 'black' }}
+/>
+
+{showSuggestions && suggestions.length > 0 && (
+    <ul className="suggestions-list">
+        {suggestions.map((suggestion, index) => (
+            <li
+                key={index}
+                className={index === activeSuggestionIndex ? 'active-suggestion' : ''}
+                onClick={() => {handleSuggestionClick(suggestion.result_query);
+                  
+
+                }}
+            >
+                {suggestion.result_query}
+            </li>
+        ))}
+    </ul>
+)}
+
                 <FontAwesomeIcon icon={faSearch} id="searchic" className="search-icon" onClick={() => handleSearch(searchInput,false)} />
                 <img className="s-i" src={searchImage} alt="Search" onClick={handleImageSearchClick} />
                 <input
